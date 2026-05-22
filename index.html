@@ -13,32 +13,56 @@
 </html>
 <button onclick="calculer()">Calculer le devis</button>
 <button onclick="genererPDF()" style="background:#f2994a;">
-📄 Générer devis PDF
-</button>
 function genererPDF(){
+  let client = document.getElementById("client").value || "Client";
+  let longueur = document.getElementById("longueur").value;
+  let hauteur = document.getElementById("hauteur").value;
+  let couleur = document.getElementById("couleur").value;
+  let total = document.getElementById("total").innerText;
+  let details = document.getElementById("details").innerHTML;
 
-let client = document.getElementById("client").value;
-let total = document.getElementById("total").innerText;
+  let fenetre = window.open("", "_blank");
 
-let contenu = `
-DESTOCK MENUISERIE
+  fenetre.document.write(`
+    <html>
+    <head>
+      <title>Devis Destock Menuiserie</title>
+      <style>
+        body{font-family:Arial;padding:30px;color:#111}
+        h1{color:#476b70}
+        .box{border:1px solid #ddd;border-radius:12px;padding:15px;margin:15px 0}
+        .total{font-size:28px;color:#f2994a;font-weight:bold}
+        .signature{margin-top:50px;border-top:1px solid #999;width:250px;padding-top:10px}
+      </style>
+    </head>
+    <body>
+      <h1>DESTOCK MENUISERIE</h1>
+      <h2>DEVIS CLIENT</h2>
 
-DEVIS CLIENT
+      <div class="box">
+        <p><strong>Client :</strong> ${client}</p>
+        <p><strong>Longueur :</strong> ${longueur} ml</p>
+        <p><strong>Hauteur :</strong> ${hauteur} m</p>
+        <p><strong>Couleur :</strong> ${couleur}</p>
+      </div>
 
-Client : ${client}
+      <div class="box">
+        ${details}
+      </div>
 
-${document.getElementById("details").innerText}
+      <p>Total TTC :</p>
+      <div class="total">${total}</div>
 
-TOTAL TTC : ${total}
+      <div class="signature">
+        Signature client
+      </div>
 
-Merci pour votre confiance.
-`;
+      <script>
+        window.print();
+      <\/script>
+    </body>
+    </html>
+  `);
 
-let blob = new Blob([contenu], { type: "text/plain" });
-
-let a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = "devis.txt";
-a.click();
-
+  fenetre.document.close();
 }
