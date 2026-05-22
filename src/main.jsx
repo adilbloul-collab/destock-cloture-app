@@ -151,6 +151,8 @@ function App() {
   return (
     <div className="app">
       
+      <h1>Destock Menuiserie</h1>
+      
       <div className="card">
         <label>Longueur (ml)</label>
         <input
