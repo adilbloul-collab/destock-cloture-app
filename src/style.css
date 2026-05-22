@@ -49,3 +49,42 @@ button {
   color: #059669;
   text-align: center;
 }
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 20px 0 25px;
+}
+
+.brand-icon {
+  font-size: 42px;
+  color: #e99a4a;
+}
+
+.brand-title,
+.brand-subtitle {
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.brand-title {
+  font-size: 34px;
+  color: #4f7070;
+}
+
+.brand-subtitle {
+  font-size: 28px;
+  color: #4f7070;
+}
+
+.brand-title::after {
+  content: "";
+  display: block;
+  width: 70px;
+  height: 6px;
+  background: #e99a4a;
+  margin-top: 8px;
+}
