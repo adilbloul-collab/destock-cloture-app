@@ -2,6 +2,8 @@ import React, { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 
+const logo = "/IMG_1762.png";
+
 const TVA = 0.20;
 
 const panneaux = {
@@ -222,7 +224,22 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Destock Menuiserie</h1>
+
+      <div
+        style={{
+          textAlign: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <img
+          src={logo}
+          alt="Logo"
+          style={{
+            width: "220px",
+            maxWidth: "90%",
+          }}
+        />
+      </div>
 
       <div className="card">
         <label>Longueur (ml)</label>
