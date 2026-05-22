@@ -151,7 +151,17 @@ function App() {
   return (
     <div className="app">
       
-      <h1>Destock Menuiserie</h1>
+      <div className="brand">
+  <div className="brand-icon">▦</div>
+  <div>
+    <div className="brand-title">
+      DESTOCK
+    </div>
+    <div className="brand-subtitle">
+      MENUISERIE
+    </div>
+  </div>
+</div>
       
       <div className="card">
         <label>Longueur (ml)</label>
