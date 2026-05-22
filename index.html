@@ -1,18 +1,124 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Destock Menuiserie</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destock Menuiserie</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f4f4;color:#111}
+.app{max-width:480px;margin:auto;padding:22px}
+h1{color:#476b70;font-size:38px;line-height:1.1}
+.card{background:white;border-radius:18px;padding:18px;margin:15px 0}
+label{font-weight:bold;display:block;margin-top:12px}
+input,select{width:100%;padding:14px;margin-top:6px;border-radius:12px;border:1px solid #ccc;font-size:16px}
+button{width:100%;padding:16px;border:0;border-radius:14px;background:#476b70;color:white;font-size:18px;font-weight:bold;margin-top:18px}
+.total{font-size:30px;font-weight:bold;color:#f2994a}
+.line{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:8px 0}
+</style>
 </head>
-<body style="font-family:Arial;padding:25px;background:#f5f5f5;">
-  <h1 style="color:#476b70;">DESTOCK MENUISERIE</h1>
-  <h2>Application de chiffrage clôture</h2>
+<body>
+<div class="app">
+<h1>DESTOCK<br>MENUISERIE</h1>
+<h2>Configurateur clôture</h2>
 
-  <div style="background:white;padding:20px;border-radius:12px;">
-    <p>✅ Application en ligne</p>
-    <p>✅ Déploiement Vercel fonctionnel</p>
-    <p>✅ Prochaine étape : intégrer le vrai configurateur clôture</p>
-  </div>
+<div class="card">
+<label>Nom du client</label>
+<input id="client" placeholder="Ex : M. Dupont">
+
+<label>Longueur en mètres linéaires</label>
+<input id="longueur" type="number" value="20">
+
+<label>Hauteur panneau</label>
+<select id="hauteur">
+<option value="1.03">1,03 m</option>
+<option value="1.23">1,23 m</option>
+<option value="1.53" selected>1,53 m</option>
+<option value="1.73">1,73 m</option>
+<option value="1.93">1,93 m</option>
+</select>
+
+<label>Couleur</label>
+<select id="couleur">
+<option value="gris">Gris RAL 7016</option>
+<option value="vert">Vert RAL 6005</option>
+</select>
+
+<label>Occultation PVC</label>
+<select id="occultation">
+<option value="non">Non</option>
+<option value="oui">Oui</option>
+</select>
+
+<button onclick="calculer()">Calculer le devis</button>
+</div>
+
+<div class="card">
+<h3>Résultat</h3>
+<div id="details"></div>
+<p>Total TTC :</p>
+<div class="total" id="total">0,00 €</div>
+</div>
+</div>
+
+<script>
+const prixPanneaux = {
+"1.03":12.00,
+"1.23":13.36,
+"1.53":16.23,
+"1.73":17.58,
+"1.93":19.10
+};
+
+const prixPoteaux = {
+"1.03":9.23,
+"1.23":10.53,
+"1.53":12.82,
+"1.73":14.68,
+"1.93":16.78
+};
+
+const prixOccultation = {
+"1.03":29.17,
+"1.23":31.51,
+"1.53":37.92,
+"1.73":40.86,
+"1.93":43.91
+};
+
+function euro(n){
+return n.toLocaleString("fr-FR",{style:"currency",currency:"EUR"});
+}
+
+function calculer(){
+let longueur = Number(document.getElementById("longueur").value);
+let hauteur = document.getElementById("hauteur").value;
+let occultation = document.getElementById("occultation").value;
+
+let nbPanneaux = Math.ceil(longueur / 2);
+let nbPoteaux = nbPanneaux + 1;
+
+let totalHT = 0;
+let html = "";
+
+let panneauHT = nbPanneaux * prixPanneaux[hauteur];
+let poteauHT = nbPoteaux * prixPoteaux[hauteur];
+
+totalHT += panneauHT + poteauHT;
+
+html += `<div class="line"><span>Panneaux x ${nbPanneaux}</span><strong>${euro(panneauHT)}</strong></div>`;
+html += `<div class="line"><span>Poteaux x ${nbPoteaux}</span><strong>${euro(poteauHT)}</strong></div>`;
+
+if(occultation === "oui"){
+let occHT = nbPanneaux * prixOccultation[hauteur];
+totalHT += occHT;
+html += `<div class="line"><span>Occultation PVC x ${nbPanneaux}</span><strong>${euro(occHT)}</strong></div>`;
+}
+
+let totalTTC = totalHT * 1.20;
+
+document.getElementById("details").innerHTML = html;
+document.getElementById("total").innerHTML = euro(totalTTC);
+}
+</script>
 </body>
 </html>
