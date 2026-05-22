@@ -7,7 +7,7 @@ const TVA = 0.20;
 const panneaux = {
   "4mm": {
     2: {
-      0.63: 10,14
+      0.63: 9.5,
       1.03: 12,
       1.23: 13.36,
       1.53: 16.23,
@@ -17,17 +17,19 @@ const panneaux = {
   },
 
   hybride: {
-  2.5: {
-    1.03: 15.89,
-    1.23: 17.92,
-    1.53: 21.98,
-    1.73: 24.01,
-    1.93: 25.87,
+    2.5: {
+      0.63: 12.9,
+      1.03: 15.89,
+      1.23: 17.92,
+      1.53: 21.98,
+      1.73: 24.01,
+      1.93: 25.87,
+    },
   },
-},
 
   "5mm": {
     2.5: {
+      0.63: 16.9,
       1.03: 20.86,
       1.23: 23.33,
       1.53: 28.74,
@@ -42,6 +44,7 @@ const occultants = {
 
   pvc: {
     2: {
+      0.63: 22,
       1.03: 31.51,
       1.23: 37.92,
       1.53: 40.86,
@@ -50,6 +53,7 @@ const occultants = {
     },
 
     2.5: {
+      0.63: 30,
       1.03: 43,
       1.23: 48,
       1.53: 55,
@@ -60,6 +64,7 @@ const occultants = {
 
   composite: {
     2: {
+      0.63: 31,
       1.03: 43.15,
       1.23: 47.56,
       1.53: 54.15,
@@ -68,6 +73,7 @@ const occultants = {
     },
 
     2.5: {
+      0.63: 39,
       1.03: 51.82,
       1.23: 57.28,
       1.53: 65.46,
@@ -78,6 +84,7 @@ const occultants = {
 
   aluminium: {
     2: {
+      0.63: 52,
       1.03: 71.64,
       1.23: 81.89,
       1.53: 97.28,
@@ -86,6 +93,7 @@ const occultants = {
     },
 
     2.5: {
+      0.63: 66,
       1.03: 87.26,
       1.23: 100.11,
       1.53: 119.37,
@@ -96,7 +104,6 @@ const occultants = {
 };
 
 const poteaux = [
-  { taille: 0.67, prix: 7,13 },
   { taille: 1.07, prix: 9.23 },
   { taille: 1.27, prix: 10.53 },
   { taille: 1.57, prix: 12.82 },
@@ -240,6 +247,7 @@ function App() {
             )
           }
         >
+          <option value={0.63}>0.63m</option>
           <option value={1.03}>1.03m</option>
           <option value={1.23}>1.23m</option>
           <option value={1.53}>1.53m</option>
@@ -361,8 +369,7 @@ function App() {
                 {" "}
                 {calcul.totalFixation.toFixed(
                   2
-                )}{" "}
-                €
+                )} €
               </strong>
             </p>
           )}
@@ -374,8 +381,7 @@ function App() {
                 {" "}
                 {calcul.totalOccultation.toFixed(
                   2
-                )}{" "}
-                €
+                )} €
               </strong>
             </p>
           )}
@@ -388,8 +394,7 @@ function App() {
               {" "}
               {calcul.totalHT.toFixed(
                 2
-              )}{" "}
-              €
+              )} €
             </strong>
           </p>
 
@@ -398,8 +403,7 @@ function App() {
             {" "}
             {calcul.totalTTC.toFixed(
               2
-            )}{" "}
-            €
+            )} €
           </p>
 
           <p className="result">
@@ -407,8 +411,7 @@ function App() {
             {" "}
             {calcul.prixML.toFixed(
               2
-            )}{" "}
-            €
+            )} €
           </p>
         </div>
       )}
