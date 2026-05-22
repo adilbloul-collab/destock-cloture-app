@@ -4,7 +4,6 @@ import { Calculator, FileText, Search, Fence, Download, Trash2, Plus, Eye, Print
 import './style.css';
 
 const TVA = 0.20;
-const TVA = 0.20;
 const LARGEURS = {standard:2, premium:2.5};
 
 const produits = [
