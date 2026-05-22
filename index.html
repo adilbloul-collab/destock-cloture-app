@@ -11,3 +11,34 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+<button onclick="calculer()">Calculer le devis</button>
+<button onclick="genererPDF()" style="background:#f2994a;">
+📄 Générer devis PDF
+</button>
+function genererPDF(){
+
+let client = document.getElementById("client").value;
+let total = document.getElementById("total").innerText;
+
+let contenu = `
+DESTOCK MENUISERIE
+
+DEVIS CLIENT
+
+Client : ${client}
+
+${document.getElementById("details").innerText}
+
+TOTAL TTC : ${total}
+
+Merci pour votre confiance.
+`;
+
+let blob = new Blob([contenu], { type: "text/plain" });
+
+let a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "devis.txt";
+a.click();
+
+}
