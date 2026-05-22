@@ -5,12 +5,14 @@ import "./style.css";
 const TVA = 0.20;
 
 const panneaux = [
-  { hauteur: 1.03, largeur: 2, prix: 12 },
+  // PANNEAUX 2M
+  { hauteur: 1.03, largeur: 2, prix: 12.0 },
   { hauteur: 1.23, largeur: 2, prix: 13.36 },
   { hauteur: 1.53, largeur: 2, prix: 16.23 },
   { hauteur: 1.73, largeur: 2, prix: 17.58 },
   { hauteur: 1.93, largeur: 2, prix: 19.1 },
 
+  // PANNEAUX 2M50
   { hauteur: 1.03, largeur: 2.5, prix: 20.86 },
   { hauteur: 1.23, largeur: 2.5, prix: 23.33 },
   { hauteur: 1.53, largeur: 2.5, prix: 28.74 },
@@ -28,9 +30,10 @@ const poteaux = [
 ];
 
 function trouverPoteau(hauteur, pose) {
-  const besoin = pose === "sceller"
-    ? hauteur + 0.5
-    : hauteur;
+  const besoin =
+    pose === "sceller"
+      ? hauteur + 0.5
+      : hauteur;
 
   return (
     poteaux.find((p) => p.taille >= besoin) ||
@@ -41,9 +44,11 @@ function trouverPoteau(hauteur, pose) {
 function App() {
   const [longueur, setLongueur] = useState(10);
   const [hauteur, setHauteur] = useState(1.53);
-  const [largeurPanneau, setLargeurPanneau] = useState(2.5);
-  const [pose, setPose] = useState("sceller");
-  const [marge, setMarge] = useState(2);
+  const [largeurPanneau, setLargeurPanneau] =
+    useState(2.5);
+
+  const [pose, setPose] =
+    useState("sceller");
 
   const calcul = useMemo(() => {
     const panneau = panneaux.find(
@@ -77,12 +82,12 @@ function App() {
         : 0;
 
     const totalHT =
-      (prixPanneaux +
-        prixPoteaux +
-        prixPlatines) *
-      marge;
+      prixPanneaux +
+      prixPoteaux +
+      prixPlatines;
 
-    const totalTTC = totalHT * (1 + TVA);
+    const totalTTC =
+      totalHT * (1 + TVA);
 
     const prixML =
       totalTTC / longueur;
@@ -94,13 +99,13 @@ function App() {
       totalHT,
       totalTTC,
       prixML,
+      prixPlatines,
     };
   }, [
     longueur,
     hauteur,
     largeurPanneau,
     pose,
-    marge,
   ]);
 
   return (
@@ -108,30 +113,57 @@ function App() {
       <h1>Destock Menuiserie</h1>
 
       <div className="card">
-        <label>Longueur totale (ml)</label>
+        <label>
+          Longueur totale (ml)
+        </label>
+
         <input
           type="number"
           value={longueur}
           onChange={(e) =>
-            setLongueur(Number(e.target.value))
+            setLongueur(
+              Number(e.target.value)
+            )
           }
         />
 
-        <label>Hauteur panneau</label>
+        <label>
+          Hauteur panneau
+        </label>
+
         <select
           value={hauteur}
           onChange={(e) =>
-            setHauteur(Number(e.target.value))
+            setHauteur(
+              Number(e.target.value)
+            )
           }
         >
-          <option value={1.03}>1.03 m</option>
-          <option value={1.23}>1.23 m</option>
-          <option value={1.53}>1.53 m</option>
-          <option value={1.73}>1.73 m</option>
-          <option value={1.93}>1.93 m</option>
+          <option value={1.03}>
+            1.03 m
+          </option>
+
+          <option value={1.23}>
+            1.23 m
+          </option>
+
+          <option value={1.53}>
+            1.53 m
+          </option>
+
+          <option value={1.73}>
+            1.73 m
+          </option>
+
+          <option value={1.93}>
+            1.93 m
+          </option>
         </select>
 
-        <label>Largeur panneau</label>
+        <label>
+          Largeur panneau
+        </label>
+
         <select
           value={largeurPanneau}
           onChange={(e) =>
@@ -140,11 +172,17 @@ function App() {
             )
           }
         >
-          <option value={2}>2 mètres</option>
-          <option value={2.5}>2m50</option>
+          <option value={2}>
+            2 mètres
+          </option>
+
+          <option value={2.5}>
+            2m50
+          </option>
         </select>
 
         <label>Type de pose</label>
+
         <select
           value={pose}
           onChange={(e) =>
@@ -154,35 +192,24 @@ function App() {
           <option value="sceller">
             À sceller
           </option>
+
           <option value="platine">
             Sur platine
           </option>
-        </select>
-
-        <label>Coefficient marge</label>
-        <select
-          value={marge}
-          onChange={(e) =>
-            setMarge(Number(e.target.value))
-          }
-        >
-          <option value={1.8}>Eco</option>
-          <option value={2}>Standard</option>
-          <option value={2.3}>Premium</option>
         </select>
       </div>
 
       {calcul && (
         <div className="card">
           <p>
-            Panneaux :{" "}
+            Nombre panneaux :{" "}
             <strong>
               {calcul.nbPanneaux}
             </strong>
           </p>
 
           <p>
-            Poteaux :{" "}
+            Nombre poteaux :{" "}
             <strong>
               {calcul.nbPoteaux}
             </strong>
@@ -195,20 +222,37 @@ function App() {
             </strong>
           </p>
 
+          {pose === "platine" && (
+            <p>
+              Platines :{" "}
+              <strong>
+                {calcul.nbPoteaux}
+              </strong>
+            </p>
+          )}
+
+          <hr />
+
           <p>
             Total HT :{" "}
             <strong>
-              {calcul.totalHT.toFixed(2)} €
+              {calcul.totalHT.toFixed(
+                2
+              )}{" "}
+              €
             </strong>
           </p>
 
           <p className="result">
             Total TTC :{" "}
-            {calcul.totalTTC.toFixed(2)} €
+            {calcul.totalTTC.toFixed(
+              2
+            )}{" "}
+            €
           </p>
 
           <p className="result">
-            Prix/ml :{" "}
+            Prix / ml :{" "}
             {calcul.prixML.toFixed(2)} €
           </p>
         </div>
@@ -217,6 +261,6 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")).render(
-  <App />
-);
+createRoot(
+  document.getElementById("root")
+).render(<App />);
