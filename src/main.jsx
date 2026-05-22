@@ -4,21 +4,95 @@ import "./style.css";
 
 const TVA = 0.20;
 
-const panneaux = [
-  // PANNEAUX 2M
-  { hauteur: 1.03, largeur: 2, prix: 12.0 },
-  { hauteur: 1.23, largeur: 2, prix: 13.36 },
-  { hauteur: 1.53, largeur: 2, prix: 16.23 },
-  { hauteur: 1.73, largeur: 2, prix: 17.58 },
-  { hauteur: 1.93, largeur: 2, prix: 19.1 },
+const panneaux = {
+  "4mm": {
+    2: {
+      1.03: 12,
+      1.23: 13.36,
+      1.53: 16.23,
+      1.73: 17.58,
+      1.93: 19.1,
+    },
+  },
 
-  // PANNEAUX 2M50
-  { hauteur: 1.03, largeur: 2.5, prix: 20.86 },
-  { hauteur: 1.23, largeur: 2.5, prix: 23.33 },
-  { hauteur: 1.53, largeur: 2.5, prix: 28.74 },
-  { hauteur: 1.73, largeur: 2.5, prix: 29.92 },
-  { hauteur: 1.93, largeur: 2.5, prix: 34.49 },
-];
+  hybride: {
+    2.5: {
+      1.03: 20.86,
+      1.23: 23.33,
+      1.53: 28.74,
+      1.73: 29.92,
+      1.93: 34.49,
+    },
+  },
+
+  "5mm": {
+    2.5: {
+      1.03: 20.86,
+      1.23: 23.33,
+      1.53: 28.74,
+      1.73: 29.92,
+      1.93: 34.49,
+    },
+  },
+};
+
+const occultants = {
+  aucun: 0,
+
+  pvc: {
+    2: {
+      1.03: 31.51,
+      1.23: 37.92,
+      1.53: 40.86,
+      1.73: 43.91,
+      1.93: 50.47,
+    },
+
+    2.5: {
+      1.03: 43,
+      1.23: 48,
+      1.53: 55,
+      1.73: 61,
+      1.93: 66,
+    },
+  },
+
+  composite: {
+    2: {
+      1.03: 43.15,
+      1.23: 47.56,
+      1.53: 54.15,
+      1.73: 58.51,
+      1.93: 63.2,
+    },
+
+    2.5: {
+      1.03: 51.82,
+      1.23: 57.28,
+      1.53: 65.46,
+      1.73: 70.89,
+      1.93: 76.35,
+    },
+  },
+
+  aluminium: {
+    2: {
+      1.03: 71.64,
+      1.23: 81.89,
+      1.53: 97.28,
+      1.73: 107.55,
+      1.93: 117.8,
+    },
+
+    2.5: {
+      1.03: 87.26,
+      1.23: 100.11,
+      1.53: 119.37,
+      1.73: 132.21,
+      1.93: 145.06,
+    },
+  },
+};
 
 const poteaux = [
   { taille: 1.07, prix: 9.23 },
@@ -43,48 +117,74 @@ function trouverPoteau(hauteur, pose) {
 
 function App() {
   const [longueur, setLongueur] = useState(10);
-  const [hauteur, setHauteur] = useState(1.53);
-  const [largeurPanneau, setLargeurPanneau] =
+
+  const [hauteur, setHauteur] =
+    useState(1.53);
+
+  const [largeur, setLargeur] =
     useState(2.5);
+
+  const [typePanneau, setTypePanneau] =
+    useState("5mm");
 
   const [pose, setPose] =
     useState("sceller");
 
-  const calcul = useMemo(() => {
-    const panneau = panneaux.find(
-      (p) =>
-        p.hauteur === Number(hauteur) &&
-        p.largeur === Number(largeurPanneau)
-    );
+  const [occultation, setOccultation] =
+    useState("aucun");
 
-    if (!panneau) return null;
+  const calcul = useMemo(() => {
+    const prixPanneau =
+      panneaux[typePanneau]?.[largeur]?.[
+        hauteur
+      ];
+
+    if (!prixPanneau) return null;
 
     const nbPanneaux = Math.ceil(
-      longueur / largeurPanneau
+      longueur / largeur
     );
 
     const nbPoteaux = nbPanneaux + 1;
 
     const poteau = trouverPoteau(
-      Number(hauteur),
+      hauteur,
       pose
     );
 
-    const prixPanneaux =
-      nbPanneaux * panneau.prix;
+    const totalPanneaux =
+      nbPanneaux * prixPanneau;
 
-    const prixPoteaux =
+    const totalPoteaux =
       nbPoteaux * poteau.prix;
 
-    const prixPlatines =
-      pose === "platine"
-        ? nbPoteaux * 5.5
-        : 0;
+    let totalOccultation = 0;
+
+    if (occultation !== "aucun") {
+      const prixOccultation =
+        occultants[occultation]?.[
+          largeur
+        ]?.[hauteur] || 0;
+
+      totalOccultation =
+        nbPanneaux * prixOccultation;
+    }
+
+    let totalFixation = 0;
+
+    if (pose === "platine") {
+      const prixParPoteau =
+        5.5 + 3 * 0.7 + 3 * 0.05;
+
+      totalFixation =
+        nbPoteaux * prixParPoteau;
+    }
 
     const totalHT =
-      prixPanneaux +
-      prixPoteaux +
-      prixPlatines;
+      totalPanneaux +
+      totalPoteaux +
+      totalOccultation +
+      totalFixation;
 
     const totalTTC =
       totalHT * (1 + TVA);
@@ -99,13 +199,16 @@ function App() {
       totalHT,
       totalTTC,
       prixML,
-      prixPlatines,
+      totalOccultation,
+      totalFixation,
     };
   }, [
     longueur,
     hauteur,
-    largeurPanneau,
+    largeur,
+    typePanneau,
     pose,
+    occultation,
   ]);
 
   return (
@@ -113,9 +216,7 @@ function App() {
       <h1>Destock Menuiserie</h1>
 
       <div className="card">
-        <label>
-          Longueur totale (ml)
-        </label>
+        <label>Longueur (ml)</label>
 
         <input
           type="number"
@@ -127,9 +228,7 @@ function App() {
           }
         />
 
-        <label>
-          Hauteur panneau
-        </label>
+        <label>Hauteur</label>
 
         <select
           value={hauteur}
@@ -139,49 +238,76 @@ function App() {
             )
           }
         >
-          <option value={1.03}>
-            1.03 m
-          </option>
-
-          <option value={1.23}>
-            1.23 m
-          </option>
-
-          <option value={1.53}>
-            1.53 m
-          </option>
-
-          <option value={1.73}>
-            1.73 m
-          </option>
-
-          <option value={1.93}>
-            1.93 m
-          </option>
+          <option value={1.03}>1.03m</option>
+          <option value={1.23}>1.23m</option>
+          <option value={1.53}>1.53m</option>
+          <option value={1.73}>1.73m</option>
+          <option value={1.93}>1.93m</option>
         </select>
 
-        <label>
-          Largeur panneau
-        </label>
+        <label>Largeur panneau</label>
 
         <select
-          value={largeurPanneau}
+          value={largeur}
           onChange={(e) =>
-            setLargeurPanneau(
+            setLargeur(
               Number(e.target.value)
             )
           }
         >
-          <option value={2}>
-            2 mètres
+          <option value={2}>2m</option>
+          <option value={2.5}>2m50</option>
+        </select>
+
+        <label>Type panneau</label>
+
+        <select
+          value={typePanneau}
+          onChange={(e) =>
+            setTypePanneau(e.target.value)
+          }
+        >
+          <option value="4mm">
+            Fil 4 mm
           </option>
 
-          <option value={2.5}>
-            2m50
+          <option value="hybride">
+            Hybride 4/5 mm
+          </option>
+
+          <option value="5mm">
+            Fil 5 mm
           </option>
         </select>
 
-        <label>Type de pose</label>
+        <label>Occultation</label>
+
+        <select
+          value={occultation}
+          onChange={(e) =>
+            setOccultation(
+              e.target.value
+            )
+          }
+        >
+          <option value="aucun">
+            Aucun
+          </option>
+
+          <option value="pvc">
+            PVC
+          </option>
+
+          <option value="composite">
+            Composite
+          </option>
+
+          <option value="aluminium">
+            Aluminium
+          </option>
+        </select>
+
+        <label>Pose</label>
 
         <select
           value={pose}
@@ -202,31 +328,52 @@ function App() {
       {calcul && (
         <div className="card">
           <p>
-            Nombre panneaux :{" "}
+            Panneaux :
             <strong>
+              {" "}
               {calcul.nbPanneaux}
             </strong>
           </p>
 
           <p>
-            Nombre poteaux :{" "}
+            Poteaux :
             <strong>
+              {" "}
               {calcul.nbPoteaux}
             </strong>
           </p>
 
           <p>
-            Taille poteaux :{" "}
+            Taille poteaux :
             <strong>
+              {" "}
               {calcul.poteau.taille} m
             </strong>
           </p>
 
           {pose === "platine" && (
             <p>
-              Platines :{" "}
+              Platines + goujons +
+              capuchons :
               <strong>
-                {calcul.nbPoteaux}
+                {" "}
+                {calcul.totalFixation.toFixed(
+                  2
+                )}{" "}
+                €
+              </strong>
+            </p>
+          )}
+
+          {occultation !== "aucun" && (
+            <p>
+              Occultation :
+              <strong>
+                {" "}
+                {calcul.totalOccultation.toFixed(
+                  2
+                )}{" "}
+                €
               </strong>
             </p>
           )}
@@ -234,8 +381,9 @@ function App() {
           <hr />
 
           <p>
-            Total HT :{" "}
+            Total HT :
             <strong>
+              {" "}
               {calcul.totalHT.toFixed(
                 2
               )}{" "}
@@ -244,7 +392,8 @@ function App() {
           </p>
 
           <p className="result">
-            Total TTC :{" "}
+            Total TTC :
+            {" "}
             {calcul.totalTTC.toFixed(
               2
             )}{" "}
@@ -252,8 +401,12 @@ function App() {
           </p>
 
           <p className="result">
-            Prix / ml :{" "}
-            {calcul.prixML.toFixed(2)} €
+            Prix / ml :
+            {" "}
+            {calcul.prixML.toFixed(
+              2
+            )}{" "}
+            €
           </p>
         </div>
       )}
